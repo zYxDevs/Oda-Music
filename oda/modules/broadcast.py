@@ -32,17 +32,13 @@ async def chat_watcher_func(_, message):
 
 @app.on_message(command("gcast") & filters.user(SUDO_USERS))
 async def broadcast_message(_, message):
-    if not message.reply_to_message:
-        pass
-    else:
+    if message.reply_to_message:
         x = message.reply_to_message.message_id
         y = message.chat.id
         sent = 0
         pin = 0
-        chats = []
         schats = await get_served_chats()
-        for chat in schats:
-            chats.append(int(chat["chat_id"]))
+        chats = [int(chat["chat_id"]) for chat in schats]
         for i in chats:
             try:
                 m = await app.forward_messages(i, y, x)

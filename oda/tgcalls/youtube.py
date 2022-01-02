@@ -30,5 +30,4 @@ def download(url: str, my_hook) -> str:
         return print(y_e)
     else:
         dloader
-    xyz = path.join("downloads", f"{info['id']}.{info['ext']}")
-    return xyz
+    return path.join("downloads", f"{info['id']}.{info['ext']}")
