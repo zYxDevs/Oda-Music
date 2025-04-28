@@ -64,11 +64,11 @@ async def pause(_, message: Message):
         return
     checking = message.from_user.mention
     chat_id = message.chat.id
-    if not await is_active_chat(chat_id):
-        return await message.reply_text(
-            "❌ __**I dont think if something's playing on voice chat**__"
-        )
-    elif not await is_music_playing(message.chat.id):
+    if (
+        not await is_active_chat(chat_id)
+        or await is_active_chat(chat_id)
+        and not await is_music_playing(message.chat.id)
+    ):
         return await message.reply_text(
             "❌ __**I dont think if something's playing on voice chat**__"
         )
@@ -91,20 +91,19 @@ async def resume(_, message: Message):
         return
     checking = message.from_user.mention
     chat_id = message.chat.id
-    if not await is_active_chat(chat_id):
+    if (
+        not await is_active_chat(chat_id)
+        or await is_active_chat(chat_id)
+        and await is_music_playing(chat_id)
+    ):
         return await message.reply_text(
             "❌ __**I dont think if something's paused on voice chat**__"
         )
-    elif await is_music_playing(chat_id):
-        return await message.reply_text(
-            "❌ __**I dont think if something's paused on voice chat**__"
-        )
-    else:
-        await music_on(chat_id)
-        await calls.pytgcalls.resume_stream(chat_id)
-        await message.reply_text(
-            f"🎧 __**Voicechat Resumed**__\n│\n╰ Music resumed by {checking}!"
-        )
+    await music_on(chat_id)
+    await calls.pytgcalls.resume_stream(chat_id)
+    await message.reply_text(
+        f"🎧 __**Voicechat Resumed**__\n│\n╰ Music resumed by {checking}!"
+    )
 
 
 @app.on_message(command(["end", "oe"]) & other_filters)
